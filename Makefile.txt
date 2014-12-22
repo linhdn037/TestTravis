@@ -1,0 +1,114 @@
+WORKSPACE=Nikkei.xcworkspace
+SCHEME_TEST=Nikkei_AllTests
+SCHEME_RELEASE=Nikkei_Development
+SDK=iphonesimulator
+CONFIGURATION_DEBUG=Debug
+CONFIGURATION_RELEASE=Release
+iOS7DESTINATION="platform=iOS Simulator,name=iPhone 5s,OS=7.1"
+iOS8DESTINATION="platform=iOS Simulator,name=iPhone 6,OS=8.1"
+SIGN="iPhone Developer: Natsuki Akama"
+PROFILE_PATH=Scripts/Profile/
+CERTS_PATH=Scripts/Certs/
+CERT=cert.cer
+P12=cert.p12
+PROVISION=dsNativeApp_dev.mobileprovision
+PROVISION_NAME=dsNativeApp_dev
+PROVISION_PATH=~/Library/MobileDevice/Provisioning\ Profiles
+KEYCHAIN_PATH=~/Library/Keychains/
+KEYCHAIN=ios-build.keychain
+CODESIGN_PATH=/usr/bin/codesign
+IPA=Nikkei.ipa
+
+# シュミレーターのリセット
+delete:
+	rm -r ~/Library/Application\ Support/iPhone\ Simulator/
+
+# iOS7のテスト
+ios7test:
+	xcodebuild \
+		-workspace $(WORKSPACE) \
+		-scheme $(SCHEME_TEST) \
+		-sdk $(SDK) \
+		-configuration $(CONFIGURATION_DEBUG) \
+		-destination $(iOS7DESTINATION) \
+		clean test \
+		| xcpretty -c -t ; exit ${PIPESTATUS[0]}
+
+# iOS8のテスト
+ios8test:
+	xcodebuild \
+		-workspace $(WORKSPACE) \
+		-scheme $(SCHEME_TEST) \
+		-sdk $(SDK) \
+		-configuration $(CONFIGURATION_DEBUG) \
+		-destination $(iOS8DESTINATION) \
+		clean test \
+		| xcpretty -c -t ; exit ${PIPESTATUS[0]}
+
+# テストフライトへのアップロード
+UploadToTestFlight:
+	# 証明書・Provisioning Profileを復号
+	openssl aes-256-cbc \
+		-k $(DECORD_CERTS) \
+		-in $(PROFILE_PATH)$(PROVISION).enc \
+		-d -a -out $(PROFILE_PATH)$(PROVISION)
+	openssl aes-256-cbc \
+		-k $(DECORD_CERTS) \
+		-in $(CERTS_PATH)$(CERT).enc \
+		-d -a -out $(CERTS_PATH)$(CERT)
+	openssl aes-256-cbc \
+		-k $(DECORD_CERTS) \
+		-in $(CERTS_PATH)$(P12).enc \
+		-d -a -out $(CERTS_PATH)$(P12)
+
+	# キーチェーンを作成
+	security create-keychain \
+		-p travis $(KEYCHAIN)
+	security default-keychain \
+		-s $(KEYCHAIN)
+	security unlock-keychain \
+		-p travis $(KEYCHAIN)
+	security set-keychain-settings \
+		-t 3600 -l $(KEYCHAIN_PATH)$(KEYCHAIN)
+
+	# キーチェーンに証明書を追加する
+	security import ./$(CERTS_PATH)AppleWWDRCA.cer \
+		-k $(KEYCHAIN_PATH)$(KEYCHAIN) \
+		-T $(CODESIGN_PATH)
+	security import ./$(CERTS_PATH)$(CERT) \
+		-k $(KEYCHAIN_PATH)$(KEYCHAIN) \
+		-T $(CODESIGN_PATH)
+	security import ./$(CERTS_PATH)$(P12) \
+		-k $(KEYCHAIN_PATH)$(KEYCHAIN) \
+		-P $(CERTS_PASS) \
+		-T $(CODESIGN_PATH)
+
+	# Provisioning Profileを保存する
+	mkdir -p $(PROVISION_PATH)
+	cp "./$(PROFILE_PATH)$(PROVISION)" $(PROVISION_PATH)
+
+	# buildフォルダを削除
+	rm -rf ./build/*
+
+	# iPAファイルを作成
+	xcodebuild \
+		-workspace $(WORKSPACE) \
+		-scheme $(SCHEME_RELEASE) \
+		-configuration $(CONFIGURATION_RELEASE) \
+		CODE_SIGN_IDENTITY=$(SIGN) \
+		archive -archivePath ./build/Nikkei.xcarchive \
+		| xcpretty -c
+	xcodebuild \
+		-exportArchive \
+		-exportFormat IPA \
+		-archivePath ./build/Nikkei.xcarchive \
+		-exportPath ./build/$(IPA) \
+		-exportProvisioningProfile '$(PROVISION_NAME)'
+
+	# テストフライトへのアップロード
+	curl http://testflightapp.com/api/builds.json \
+		-F file="@build/$(IPA)" \
+		-F api_token="$(TESTFLIGHT_API_TOKEN)" \
+		-F team_token="$(TESTFLIGHT_TEAM_TOKEN)" \
+		-F certribution_lists='Internal' \
+		-F notes="Beta"

@@ -1,0 +1,23 @@
+language: objective-c
+env:
+  matrix:
+  - LC_CTYPE=en_US.UTF-8
+  global:
+  - secure: "gQAIQD6dsdRgxpxUrPv2XjytHYb/d+R8X/H56nKrAuUzMpg5TWeHmebX5c0OhyuToRwm+xlK1pgvGjFb2p2jJ7CaK97oQcY/ELO6isbQe4wnLFQu2BMn32HKNGnpu0SzEyNM2n0/rjO8pC3aRH4X1fufAhUe/QRzSYkdDFWbT3Q="
+  - secure: "zu/zpAUqWXsYmHspgdaUXn3+BmhltW3wReFR893LrEtW2496dVQYnO5dJFKiUQ+kKPXYI+HhaS+i/Nvm7IDGp64ie8iyz4enNThwUjw0bAEoev9bZeK4rNQc5gDMS8paftH2wJAKNyJ03ClfvvAHE0jXtz2Upv4FsxgKAND9NjY="
+  - secure: "zj6CTvJZ/gso7p6oJpGlmwNJbKKYAE2f3sqIgcnBIRLsg9fK50nUJcZnY6nZL4lvoi2qc8ZdNZLYqtOPwxRI6/238/b28wfXnMYcf0VwuOEjBziGqxtnjlDKpVYT8KVHwcZElDnHn7lnPLth2IDK2/Z7Z3dN5It1dQNStWKj0S0="
+  - secure: "qmsFlFxO3VE9vnRzlIkVTKAsbu+L25Af/wPILA6oDVpaqEaLO1G57gIHqhCoB0l+UPYQwwN9YHc2yCeF98JCX+2k9kE6aAyBM4mJ9YQ2ZMvRsb8cB7LmXCm6hhCW9RYqYWiwyiOfjZUHKbBU/HexFtU3tTrpViSgjeiUn2A2fSw="
+cache:
+  directories:
+  - Pods
+before_install:
+- brew update
+- pod install
+script:
+- make delete
+- make ios7test
+- make ios8test
+before_script:
+- if [[ "$TRAVIS_BRANCH" == "master" ]]; then make UploadToTestFlight; fi
+notifications:
+- slack: nikkeidevs:acNhrOrOe5NKEFGD24Dy8XRX
