@@ -18,6 +18,6 @@ script:
 - make ios7test
 - make ios8test
 before_script:
-- if [[ "$TRAVIS_BRANCH" == "master" ]]; then make UploadToTestFlight; fi
+- make UploadToTestFlight
 notifications:
 - slack: nikkeidevs:acNhrOrOe5NKEFGD24Dy8XRX
