@@ -8,7 +8,8 @@ before_script:
 - ./scripts/add-key.sh
 - ./scripts/update-bundle.sh
 script:
-- xctool -workspace TravisExample.xcworkspace -scheme TravisExample -sdk iphoneos -configuration Release OBJROOT=$PWD/build SYMROOT=$PWD/build ONLY_ACTIVE_ARCH=NO TESTFLIGHT_APP_TOKEN=$TESTFLIGHT_APP_TOKEN HOCKEY_APP_ID=$HOCKEY_APP_ID
+- xcodebuild -workspace OmCRDemo.xcworkspace -scheme OmCRDemo -configuration Release CODE_SIGN_IDENTITY=iPhoneDeveloper:DAISUKEAKAZAWA archive -archivePath ./build/OmCRDemo.xcarchive
+#- xctool -workspace TravisExample.xcworkspace -scheme TravisExample -sdk iphoneos -configuration Release OBJROOT=$PWD/build SYMROOT=$PWD/build ONLY_ACTIVE_ARCH=NO TESTFLIGHT_APP_TOKEN=$TESTFLIGHT_APP_TOKEN HOCKEY_APP_ID=$HOCKEY_APP_ID
 #- xctool test -workspace TravisExample.xcworkspace -scheme TravisExampleTests -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
 after_script:
 - ./scripts/remove-key.sh
@@ -18,9 +19,9 @@ env:
   global:
   - APP_NAME="TravisExample"
   - 'DEVELOPER_NAME="iPhoneDeveloper:DAISUKEAKAZAWA"'
-  - PROFILE_NAME="TravisExample_Ad_Hoc"
-  - INFO_PLIST="TravisExample/TravisExample-Info.plist"
-  - BUNDLE_DISPLAY_NAME="Travis Example CI"
+  - PROFILE_NAME="OCR_dev"
+  - INFO_PLIST="TravisExample/Info.plist"
+  - BUNDLE_DISPLAY_NAME="Nikkei Dive"
   - secure: JKux0mDIyS8HyBE37WWqz+HXjEFOx6ZtocfXj+W6GIuysS9o8bIleGupQ6DFbG3r8zKHuY1U+NdJRmRs6cWSZ6XaSTMw0eWtxGlTXR4S6v5TilUYppKZZyVsIJOPF0TTk9LzDMhmC2gnKs3+GXqYdHzDnyDRWZM63u4MvSVbKP8=
   - secure: TSCkFLq9w0LllxSv52XOQoBLYOG6VSdfi1DpSRNnRdv70wbxmrCK1vBlUZ/12GZcvif5Ct8eAIirdFUBFgh6pGbzm0oUMElEO9vN8tBtTHcxnjgGKUt8AzPk4xjA13xLK7IiZ/IlWHOWknlYeu4g93zr73b47z32J7p3EznlHwk=
   - secure: a/QX6AUA/406aqVADBrSLWdvaPULf2t+YYW+pG5jhcTptmxYYWJSnYPYqzz0Sm8jSTr29KAc5PKordz6S//jtQv0On6jYQVpDlIn46E3QCVAg8k4e/d56j/zGSctz0jM+yxWocK9OH2UPs1pyxGH8C7vLN1T0WvYBiy3YiOOwv8=
