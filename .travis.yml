@@ -8,7 +8,7 @@ before_script:
 - ./scripts/add-key.sh
 - ./scripts/update-bundle.sh
 script:
-- xcodebuild -workspace TravisExample.xcworkspace -scheme OmCRDemo -configuration Release CODE_SIGN_IDENTITY=iPhoneDeveloper:DAISUKEAKAZAWA archive -archivePath ./build/TravisExample.xcarchive
+- xcodebuild -workspace TravisExample.xcworkspace -scheme TravisExample -configuration Release CODE_SIGN_IDENTITY=iPhoneDeveloper:DAISUKEAKAZAWA archive -archivePath ./build/TravisExample.xcarchive
 #- xctool -workspace TravisExample.xcworkspace -scheme TravisExample -sdk iphoneos -configuration Release OBJROOT=$PWD/build SYMROOT=$PWD/build ONLY_ACTIVE_ARCH=NO TESTFLIGHT_APP_TOKEN=$TESTFLIGHT_APP_TOKEN HOCKEY_APP_ID=$HOCKEY_APP_ID
 #- xctool test -workspace TravisExample.xcworkspace -scheme TravisExampleTests -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
 after_script:
