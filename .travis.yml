@@ -2,9 +2,9 @@ language: objective-c
 cache: bundler
 before_script:
 
-- openssl aes-256-cbc -k "$ENCRYPTION_SECRET" -in scripts/profile/TravisExample_Ad_Hoc.mobileprovision.enc -d -a -out scripts/profile/TravisExample_Ad_Hoc.mobileprovision
-- openssl aes-256-cbc -k "$ENCRYPTION_SECRET" -in scripts/certs/dist.cer.enc -d -a -out scripts/certs/dist.cer
-- openssl aes-256-cbc -k "$ENCRYPTION_SECRET" -in scripts/certs/dist.p12.enc -d -a -out scripts/certs/dist.p12
+- openssl aes-256-cbc -k "nikkei_seta" -in scripts/profile/TravisExample_Ad_Hoc.mobileprovision.enc -d -a -out scripts/profile/TravisExample_Ad_Hoc.mobileprovision
+- openssl aes-256-cbc -k "nikkei_seta" -in scripts/certs/dist.cer.enc -d -a -out scripts/certs/dist.cer
+- openssl aes-256-cbc -k "nikkei_seta" -in scripts/certs/dist.p12.enc -d -a -out scripts/certs/dist.p12
 - ./scripts/add-key.sh
 - ./scripts/update-bundle.sh
 script:
@@ -17,7 +17,7 @@ after_success:
 env:
   global:
   - APP_NAME="TravisExample"
-  - 'DEVELOPER_NAME="iPhone Distribution: Mattes Groeger"'
+  - 'DEVELOPER_NAME="iPhoneDeveloper:DAISUKEAKAZAWA"'
   - PROFILE_NAME="TravisExample_Ad_Hoc"
   - INFO_PLIST="TravisExample/TravisExample-Info.plist"
   - BUNDLE_DISPLAY_NAME="Travis Example CI"
