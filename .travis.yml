@@ -2,13 +2,13 @@ language: objective-c
 cache: bundler
 before_script:
 
-- openssl aes-256-cbc -k "nikkei_seta" -in scripts/profile/TravisExample_Ad_Hoc.mobileprovision.enc -d -a -out scripts/profile/TravisExample_Ad_Hoc.mobileprovision
+- openssl aes-256-cbc -k "nikkei_seta" -in scripts/profile/OCR_dev.mobileprovision.enc -d -a -out scripts/profile/OCR_dev.mobileprovision
 - openssl aes-256-cbc -k "nikkei_seta" -in scripts/certs/dist.cer.enc -d -a -out scripts/certs/dist.cer
 - openssl aes-256-cbc -k "nikkei_seta" -in scripts/certs/dist.p12.enc -d -a -out scripts/certs/dist.p12
 - ./scripts/add-key.sh
 - ./scripts/update-bundle.sh
 script:
-- xcodebuild -workspace OmCRDemo.xcworkspace -scheme OmCRDemo -configuration Release CODE_SIGN_IDENTITY=iPhoneDeveloper:DAISUKEAKAZAWA archive -archivePath ./build/OmCRDemo.xcarchive
+- xcodebuild -workspace TravisExample.xcworkspace -scheme OmCRDemo -configuration Release CODE_SIGN_IDENTITY=iPhoneDeveloper:DAISUKEAKAZAWA archive -archivePath ./build/TravisExample.xcarchive
 #- xctool -workspace TravisExample.xcworkspace -scheme TravisExample -sdk iphoneos -configuration Release OBJROOT=$PWD/build SYMROOT=$PWD/build ONLY_ACTIVE_ARCH=NO TESTFLIGHT_APP_TOKEN=$TESTFLIGHT_APP_TOKEN HOCKEY_APP_ID=$HOCKEY_APP_ID
 #- xctool test -workspace TravisExample.xcworkspace -scheme TravisExampleTests -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
 after_script:
