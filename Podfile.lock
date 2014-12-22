@@ -1,0 +1,16 @@
+PODS:
+  - HockeySDK (3.5.7)
+  - Kiwi (2.3.1)
+  - TestFlightSDK (2.0.2)
+
+DEPENDENCIES:
+  - HockeySDK (~> 3.5.0-rc3)
+  - Kiwi
+  - TestFlightSDK (~> 2.0.2)
+
+SPEC CHECKSUMS:
+  HockeySDK: f0e874d1c6833163ee0c4e423606faf33ad04071
+  Kiwi: 73e1400209055ee9c8ba78c6012b6b642d0fb9f7
+  TestFlightSDK: ea2c14b426ec4a2e4c57b74769212643a311e1a2
+
+COCOAPODS: 0.35.0
